@@ -21,16 +21,6 @@ Users often struggle to manage daily tasks because existing tools are either ove
 ## 👥 User Stories
 To ensure the application meets the needs of its end-users, the following requirements have been defined:
 
-### 🛡️ Administrator Roles
-
-* **As an Administrator**, I want to **manage my own personal task list** with the same functionality as a Standard User, so I can stay productive while managing the system.
-
-* **As an Administrator**, I want to **reset a user's password** to maintain system accessibility for the team.
-
-* **As an Administrator**, I want to **access a system-wide dashboard** to view total task counts and user activity for project reporting.
-
-### 👤 Standard User (Authenticated User)
-
 * As a user, I want to **log in with my username and password** so that I can securely view and manage my personal task list.
 
 * As a user, I want to **add a new task with a valid future date and description** to keep my schedule accurate.
