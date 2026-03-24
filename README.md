@@ -21,18 +21,28 @@ Users often struggle to manage daily tasks because existing tools are either ove
 ## 👥 User Stories
 To ensure the application meets the needs of its end-users, the following requirements have been defined:
 
-* As a user, I want to **log in with my username and password** so that I can securely view and manage my personal task list.
+### 🔑 Access & Security
+* **As a user**, I want to **log in with my username and password** so that I can securely view and manage my personal task list.
+* **As a user**, I want my data to be **automatically saved** so that I never lose my progress or task history when I close the application.
 
-* As a user, I want to **add a new task with a valid future date and description** to keep my schedule accurate.
+### 📝 Task Operations
 
-* As a user, I want to **search for a task by date or description** so I can efficiently plan my activities.
+* **As a user**, I want to **create new tasks** with descriptions and dates so that I can keep track of upcoming responsibilities.
+* **As a user**, I want to **edit existing tasks** so that I can update details as my plans and circumstances change.
+* **As a user**, I want to **delete specific tasks** so that I can remove items that are no longer relevant to my workload.
+* **As a user**, I want the option to **cancel a current action** via a button to prevent saving unwanted changes or accidental entries.
 
-* As a user, I want to **edit specific tasks** to update their details as my plans change.
+### 🔍 Discovery & Organization
 
-* As a user, I want to **delete specific tasks** to keep my workload focused.
+* **As a user**, I want to **filter and search my tasks by multiple criteria** (description keywords, date, priority level, and task type) so that I can instantly drill down to the exact subset of tasks I need to focus on.
+* **As a user**, I want to **assign priority levels** (Low, Medium, High) to my tasks to visually distinguish my most critical work from minor to-dos.
 
-* As a user, I want the option to **cancel an action by clicking a button** if I change my mind during input.
 
-* As a user, I want my **data automatically saved** so I never lose my progress.
+### 🧬 Specialized Task Behaviors
+* **As a user**, I want to create **Deadline Tasks** that automatically flag themselves as "Overdue" if the date passes, ensuring I don't miss urgent milestones.
+* **As a user**, I want to create **Recurring Tasks** that automatically renew themselves for a future date once finished, eliminating the need for manual re-entry.
 
-* As a user, I want a **simple and well-organized interface** so that I can stay focused on completing tasks rather than navigating the app.
+### 📊 Reporting & Export
+* **As a user**, I want a **"Download Report" button** that immediately exports my task statistics into an **Excel/CSV file** so I can track my long-term productivity offline with one click.
+  
+
