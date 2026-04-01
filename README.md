@@ -44,5 +44,64 @@ To ensure the application meets the needs of its end-users, the following requir
 
 ### 📊 Reporting & Export
 * **As a user**, I want a **"Download Report" button** that immediately exports my task statistics into an **Excel/CSV file** so I can track my long-term productivity offline with one click.
-  
+
+
+## Domain Model
+```mermaid
+---
+config:
+  theme: neo
+  look: neo
+  layout: dagre
+---
+classDiagram
+direction TB
+    class Task {
+	    +int id
+	    +String description
+	    +Priority priority
+	    +bool completed
+	    +cancelAction()
+	    +execute_completion()*
+    }
+
+    class DeadlineTask {
+	    +Date dueDate
+	    +bool isOverdue()
+	    +execute_completion()
+    }
+
+    class RecurringTask {
+	    +String interval
+	    +renew()
+	    +execute_completion()
+    }
+
+    class Report {
+	    +generate_summary(List~Task~ tasks)
+	    +download_as_excel()
+    }
+
+    class Priority {
+	    Low
+	    Medium
+	    High
+    }
+
+    class User {
+	    +String username
+	    +String password
+	    +login()
+	    +logout()
+    }
+
+	<<abstract>> Task
+	<<enumeration>> Priority
+
+    User "1" --> "*" Task : owns
+    Task <|-- DeadlineTask : is-a
+    Task <|-- RecurringTask : is-a
+    Task o-- Priority : has-a
+    Report ..> Task : processes
+```
 
