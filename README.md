@@ -45,6 +45,170 @@ To ensure the application meets the needs of its end-users, the following requir
 ### 📊 Reporting & Export
 * **As a user**, I want a **"Download Report" button** that immediately exports my task statistics into an **Excel/CSV file** so I can track my long-term productivity offline with one click.
 
+## User Cases
+
+### 🔑 Access & Security
+| Field | Details |
+| :--- | :--- |
+| **User case ID** | TC_001 |
+| **User case title/description** | Verify that a user can log in with valid username and password  |
+| **Preconditions** | - User is registered; - Login page is accessible  |
+| **User steps** | 1. Open login page; 2. Enter username `pro_user`; 3. Enter password `Password@123`; 4. Click Login  |
+| **User data/input** | Username: `pro_user`, Password: `Password@123`  |
+| **Expected result** | User is logged in successfully and dashboard is displayed  |
+| **Status** | Pass |
+
+| Field | Details |
+| :--- | :--- |
+| **User case ID** | TC_002 |
+| **User case title/description** | Verify login failure with incorrect password |
+| **Preconditions** | User is registered; Login page is accessible |
+| **User steps** | 1. Enter valid username; 2. Enter incorrect password; 3. Click Login |
+| **User data/input** | Username: `pro_user`, Password: `WrongPassword` |
+| **Expected result** | System rejects login and displays an error message |
+| **Status** | Pass |
+
+| Field | Details |
+| :--- | :--- |
+| **User case ID** | TC_003 |
+| **User case title/description** | Verify user can securely log out of the system |
+| **Preconditions** | User is currently logged in |
+| **User steps** | 1. Click the "Logout" button |
+| **User data/input** | N/A |
+| **Expected result** | Session is terminated and user is redirected to login screen |
+| **Status** | Pass |
+
+---
+
+### 📝 Task Operations
+| Field | Details |
+| :--- | :--- |
+| **User case ID** | TC_004 |
+| **User case title/description** | Verify creation of a new standard task |
+| **Preconditions** | User is logged in and on the dashboard |
+| **User steps** | 1. Click "New Task"; 2. Enter description; 3. Select Priority; 4. Click Save |
+| **User data/input** | Description: "Buy groceries", Priority: "Medium" |
+| **Expected result** | Task appears in the list and is saved to the SQLite database |
+| **Status** | Pass |
+
+| Field | Details |
+| :--- | :--- |
+| **User case ID** | TC_005 |
+| **User case title/description** | Verify that an existing task can be updated |
+| **Preconditions** | A task already exists in the database |
+| **User steps** | 1. Click "Edit" on a task; 2. Change the description; 3. Click Save |
+| **User data/input** | New Description: "Buy organic groceries" |
+| **Expected result** | The task description is updated in the UI and database |
+| **Status** | Pass |
+
+| Field | Details |
+| :--- | :--- |
+| **User case ID** | TC_006 |
+| **User case title/description** | Verify removal of a task from the list |
+| **Preconditions** | At least one task exists for the user |
+| **User steps** | 1. Click the "Delete" icon; 2. Confirm deletion |
+| **User data/input** | Target Task ID: 101 |
+| **Expected result** | Task is removed from the UI and the database record is deleted |
+| **Status** | Pass |
+
+| Field | Details |
+| :--- | :--- |
+| **User case ID** | TC_007 |
+| **User case title/description** | Verify "Cancel" button prevents unwanted changes |
+| **Preconditions** | "Edit Task" or "New Task" modal is open |
+| **User steps** | 1. Modify task details; 2. Click "Cancel" |
+| **User data/input** | Description: "Mistake task" |
+| **Expected result** | Modal closes; no new task is created and no changes are saved |
+| **Status** | Pass |
+
+---
+
+### 🔍 Discovery & Organization
+| Field | Details |
+| :--- | :--- |
+| **User case ID** | TC_008 |
+| **User case title/description** | Verify task filtering by description keywords |
+| **Preconditions** | Multiple tasks exist with different names |
+| **User steps** | 1. Enter keyword in the search bar |
+| **User data/input** | Keyword: "Report" |
+| **Expected result** | Only tasks containing "Report" are visible in the list |
+| **Status** | Pass |
+
+| Field | Details |
+| :--- | :--- |
+| **User case ID** | TC_009 |
+| **User case title/description** | Verify list filtering by Priority Level |
+| **Preconditions** | Tasks with varied priorities exist (Low, Medium, High) |
+| **User steps** | 1. Select "High" from the Priority filter dropdown |
+| **User data/input** | Filter: "High" |
+| **Expected result** | Only tasks with "High" priority are displayed |
+| **Status** | Pass |
+
+| Field | Details |
+| :--- | :--- |
+| **User case ID** | TC_010 |
+| **User case title/description** | Verify behavior when no tasks match search criteria (Edge Case) |
+| **Preconditions** | Standard tasks exist in the database |
+| **User steps** | 1. Enter a non-matching string in search |
+| **User data/input** | Search: "xyz123nonexistent" |
+| **Expected result** | List displays "No tasks found"; system remains stable |
+| **Status** | Pass |
+
+---
+
+### 🧬 Specialized Task Behaviors
+| Field | Details |
+| :--- | :--- |
+| **User case ID** | TC_011 |
+| **User case title/description** | Verify "Overdue" flag triggers for Deadline Tasks |
+| **Preconditions** | User is on the creation screen |
+| **User steps** | 1. Create Deadline Task; 2. Set Due Date to a past date |
+| **User data/input** | Due Date: `2020-01-01` |
+| **Expected result** | Task is created and automatically marked with an "Overdue" badge |
+| **Status** | Pass |
+
+| Field | Details |
+| :--- | :--- |
+| **User case ID** | TC_012 |
+| **User case title/description** | Verify task automatically renews after completion |
+| **Preconditions** | A Recurring Task with a "Daily" interval is present |
+| **User steps** | 1. Mark the Recurring Task as "Completed" |
+| **User data/input** | Interval: "Daily" |
+| **Expected result** | Old task is archived; a new task instance is created for the next day |
+| **Status** | Pass |
+
+| Field | Details |
+| :--- | :--- |
+| **User case ID** | TC_013 |
+| **User case title/description** | Verify UI adapts when switching Task types |
+| **Preconditions** | "New Task" modal is open |
+| **User steps** | 1. Change type from "Deadline" to "Recurring" |
+| **User data/input** | Type Selector |
+| **Expected result** | "Due Date" field is hidden and "Interval" field is displayed |
+| **Status** | Pass |
+
+---
+
+### 📊 Reporting & Persistence
+| Field | Details |
+| :--- | :--- |
+| **User case ID** | TC_014 |
+| **User case title/description** | Verify data remains after a browser refresh (System Test) |
+| **Preconditions** | User has created multiple tasks |
+| **User steps** | 1. Manually refresh the browser page (F5) |
+| **User data/input** | N/A |
+| **Expected result** | All tasks are re-fetched from SQLite and persist in the UI |
+| **Status** | Pass |
+
+| Field | Details |
+| :--- | :--- |
+| **User case ID** | TC_015 |
+| **User case title/description** | Verify export of task data to external file |
+| **Preconditions** | User has task history in the system |
+| **User steps** | 1. Click "Download Report" button |
+| **User data/input** | N/A |
+| **Expected result** | A downloadable file (.csv/.xlsx) is generated with task statistics |
+| **Status** | Pass |
 
 ## Domain Model
 ```mermaid
