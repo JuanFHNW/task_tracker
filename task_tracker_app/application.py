@@ -5,39 +5,45 @@ from __future__ import annotations
 from nicegui import ui
 
 from .data_access.db import Database
-from .data_access.dao import TaskDAO, UserDAO  
-from .services.task_service import TaskService
-from .services.auth_service import AuthService   
-from .ui.controllers import TaskController, AuthController
-from .ui.pages import Pages
+from .data_access.dao import UserDAO, TaskDAO, TaskInstanceDAO
+#from .services.auth_service import AuthService
+#from .services.task_service import TaskService
+from .ui.controllers import AuthController, TaskController
+#from .ui.pages import Pages
 
 
 class TaskApplication:
     """Main application wiring following clean architecture."""
 
     def __init__(self) -> None:
+        # 1. Database
         self.database = Database()
         self.database.init_schema_and_seed()
 
         engine = self.database.engine
 
-        # Persistence Layer
+        # 2. Persistence Layer (DAOs)
         self.user_dao = UserDAO(engine)
         self.task_dao = TaskDAO(engine)
+        self.task_instance_dao = TaskInstanceDAO(engine)
 
-        # Service Layer
-        self.auth_service = AuthService(user_dao=self.user_dao)
-        self.task_service = TaskService(task_dao=self.task_dao)
+        # 3. Service Layer (Business Logic)
+        #self.auth_service = AuthService(user_dao=self.user_dao)
+        #self.task_service = TaskService(
+           # task_dao=self.task_dao,
+            #task_instance_dao=self.task_instance_dao,
+            #database=self.database,          # Needed for transactional scope
+        #)
 
-        # Controller Layer (You)
+        # 4. Controller Layer (Orchestration)
         self.auth_controller = AuthController(auth_service=self.auth_service)
         self.task_controller = TaskController(task_service=self.task_service)
 
-        # UI Layer
-        self.pages = Pages(
-            auth_controller=self.auth_controller,
-            task_controller=self.task_controller
-        )
+        # 5. UI Layer
+        #self.pages = Pages(
+            #auth_controller=self.auth_controller,
+            #task_controller=self.task_controller
+        #)
 
     def run(self, host: str = "0.0.0.0", port: int = 8080, reload: bool = True) -> None:
         """Start the NiceGUI web application."""
@@ -46,6 +52,6 @@ class TaskApplication:
             host=host,
             port=port,
             reload=reload,
-            title="TaskTracker",
+            title="Task Tracker Pro",
             storage_secret="your-super-secret-key-change-in-production"
         )

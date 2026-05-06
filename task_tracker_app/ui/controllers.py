@@ -1,20 +1,25 @@
 """UI Controllers – Orchestration layer (Developer 4)."""
 
 from __future__ import annotations
-from datetime import date
-from typing import Optional
+from datetime import datetime
+from typing import List, Optional
 
 from nicegui import app
 
-from domain.models import Task
-from services.task_service import TaskService
-from services.auth_service import AuthService
+# Correct imports - use your actual models
+from task_tracker_app.models.task import Task
+from task_tracker_app.models.task_instance import TaskInstance
+from task_tracker_app.models.enums import Priority, Interval, Status
+
+##from task_tracker_app.services.task_service import TaskService
+##from task_tracker_app.services.auth_service import AuthService
+
 
 class AuthController:
     """Handles all authentication-related logic for the UI."""
 
-    def __init__(self, auth_service: AuthService):
-        self.auth_service = auth_service
+    #def __init__(self, auth_service: AuthService):
+        #self.auth_service = auth_service
 
     def login(self, username: str, password: str) -> bool:
         """Authenticate user and set session."""
@@ -34,6 +39,10 @@ class AuthController:
     def is_authenticated(self) -> bool:
         return app.storage.user.get("authenticated", False)
 
+    def get_current_user_id(self) -> Optional[int]:
+        """Helper used by TaskController."""
+        return app.storage.user.get("user_id")
+
     def get_current_username(self) -> str:
         return app.storage.user.get("username", "Guest")
 
@@ -41,56 +50,85 @@ class AuthController:
 class TaskController:
     """Orchestrates task operations between UI and business logic."""
 
-    def __init__(self, task_service: TaskService) -> None:
-        self.task_service = task_service
+    #def __init__(self, task_service: TaskService) -> None:
+        #self.task_service = task_service
 
-    def create_task(self, title: str, description: str | None = None,
-                    due_date: date | None = None, priority: str = "Medium",
-                    task_type: str = "OneTime") -> Task:
-        """Create a new task."""
-        task = Task(
-            title=title,
+    def get_current_user_id(self) -> int:
+        user_id = app.storage.user.get("user_id")
+        if not user_id:
+            raise PermissionError("User not authenticated")
+        return user_id
+
+    # ==================== CREATE ====================
+    def create_task(
+        self,
+        description: str,
+        priority: str = "MEDIUM",
+        interval: str | None = None,           # "DAILY", "WEEKLY", etc. or None
+        end_date: datetime | None = None,      # For recurring series end
+        due_date: datetime | None = None       # For first instance (one-time or initial)
+    ) -> Task:
+        """Create a new master Task + first TaskInstance."""
+        user_id = self.get_current_user_id()
+
+        return self.task_service.create_task(
             description=description,
-            due_date=due_date,
-            priority=priority,
-            task_type=task_type,
-            # user_id will be set in service or here using current user
+            priority=Priority(priority.upper()),
+            interval=Interval(interval) if interval else None,
+            end_date=end_date,
+            due_date=due_date,           # Passed to service for first instance
+            user_id=user_id
         )
-        return self.task_service.create_task(task)
 
-    def list_tasks(self) -> list[Task]:
-        return self.task_service.list_tasks()
+    # ==================== READ ====================
+    def list_tasks(self) -> List[Task]:
+        """List only the current user's visible master tasks."""
+        user_id = self.get_current_user_id()
+        return self.task_service.list_tasks(user_id=user_id)
 
-    def get_task(self, task_id: int) -> Task | None:
+    def get_task(self, task_id: int) -> Optional[Task]:
+        """Get a single task (with ownership check in service)."""
         return self.task_service.get_task(task_id)
 
+    def get_task_with_history(self, task_id: int) -> dict:
+        """Useful for master-detail view: task + all its instances."""
+        return self.task_service.get_task_with_history(task_id)
+
+    # ==================== UPDATE / DELETE ====================
     def update_task(self, task_id: int, **kwargs) -> bool:
-        """Update task with flexible keyword arguments."""
-        task = self.task_service.get_task(task_id)
-        if not task:
-            return False
-
-        for key, value in kwargs.items():
-            if hasattr(task, key):
-                setattr(task, key, value)
-
-        self.task_service.update_task(task)
-        return True
+        """Update task fields (description, priority, interval, etc.)."""
+        user_id = self.get_current_user_id()
+        return self.task_service.update_task(task_id, user_id=user_id, **kwargs)
 
     def delete_task(self, task_id: int) -> bool:
+        user_id = self.get_current_user_id()
         try:
-            self.task_service.delete_task(task_id)
+            self.task_service.delete_task(task_id, user_id=user_id)
+            return True
+        except Exception:
+            return False
+
+    # ==================== EXECUTION (Instances) ====================
+    def mark_started(self, task_id: int) -> bool:
+        """Start working on the current pending instance."""
+        user_id = self.get_current_user_id()
+        try:
+            self.task_service.mark_started(task_id, user_id=user_id)
             return True
         except Exception:
             return False
 
     def mark_completed(self, task_id: int) -> bool:
+        """Finish current instance. Handles recurring logic if needed."""
+        user_id = self.get_current_user_id()
         try:
-            self.task_service.mark_completed(task_id)
+            self.task_service.mark_completed(task_id, user_id=user_id)
             return True
         except Exception:
             return False
 
+    # ==================== REPORTING ====================
     def generate_report(self) -> tuple[bytes, str]:
         """Returns (csv_bytes, filename)"""
-        return self.task_service.generate_report()
+        user_id = self.get_current_user_id()
+        return self.task_service.generate_report(user_id=user_id)
