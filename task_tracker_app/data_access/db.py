@@ -50,7 +50,7 @@ class Database:
         """
         Facade for session. Initialize commit, rollback and close only here
         """
-        session = Session(self._engine)
+        session = Session(self._engine, expire_on_commit=False)
         try:
             yield session
             session.commit()
