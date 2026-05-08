@@ -9,7 +9,7 @@ from .data_access.dao import UserDAO, TaskDAO, TaskInstanceDAO
 from .services.auth_service import AuthService
 from .services.task_service import TaskService
 from .ui.controllers import AuthController, TaskController
-#from .ui.pages import Pages
+from .ui.pages import Pages
 
 
 class TaskApplication:
@@ -18,28 +18,25 @@ class TaskApplication:
     def __init__(self) -> None:
         # 1. Database
         self.database = Database()
-        self.database.init_schema_and_seed()
+        self.database.init_schema()
 
-        engine = self.database.engine
-
-        # 2. Persistence Layer (DAOs)
-        self.user_dao = UserDAO(engine)
-        self.task_dao = TaskDAO(engine)
-        self.task_instance_dao = TaskInstanceDAO(engine)
-
-        # 3. Service Layer
+        # 2. Service Layer
         self.auth_service = AuthService(database=self.database)
-        self.auth_service = TaskService(database=self.database)
+        self.task_service = TaskService(database=self.database)
+        self.report_service = ReportService(database=self.database)
 
-        # 4. Controller Layer (Orchestration)
+        # 3. Controller Layer 
         self.auth_controller = AuthController(auth_service=self.auth_service)
-        self.task_controller = TaskController(task_service=self.task_service)
+        self.task_controller = TaskController(
+            task_service=self.task_service,
+            report_service=self.report_service,
+        )
 
-        # 5. UI Layer
-        #self.pages = Pages(
-            #auth_controller=self.auth_controller,
-            #task_controller=self.task_controller
-        #)
+        # 4. UI Layer 
+        self.pages = Pages(
+            auth_controller=self.auth_controller,
+            task_controller=self.task_controller
+        )
 
     def run(self, host: str = "0.0.0.0", port: int = 8080, reload: bool = True) -> None:
         """Start the NiceGUI web application."""

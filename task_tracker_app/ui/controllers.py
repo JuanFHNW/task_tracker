@@ -7,11 +7,12 @@ from typing import List, Optional
 from nicegui import app
 
 from task_tracker_app.models.task import Task
-from task_tracker_app.models.task_instance import TaskInstance
-from task_tracker_app.models.enums import Priority, Interval, Status
+from task_tracker_app.models.user import User
+from task_tracker_app.models.enums import Priority, Interval
 
 from task_tracker_app.services.task_service import TaskService
 from task_tracker_app.services.auth_service import AuthService
+from task_tracker_app.services.report_service import ReportService
 
 
 class AuthController:
@@ -32,6 +33,10 @@ class AuthController:
             return True
         return False
 
+    def register(self, username: str, password: str) -> User:
+        """Create a user account through the auth service."""
+        return self.auth_service.register(username, password)
+
     def logout(self) -> None:
         app.storage.user.clear()
 
@@ -49,8 +54,9 @@ class AuthController:
 class TaskController:
     """Orchestrates task operations between UI and business logic."""
 
-    def __init__(self, task_service: TaskService) -> None:
+    def __init__(self, task_service: TaskService, report_service: ReportService) -> None:
         self.task_service = task_service
+        self.report_service = report_service
 
     def get_current_user_id(self) -> int:
         user_id = app.storage.user.get("user_id")
@@ -130,4 +136,4 @@ class TaskController:
     def generate_report(self) -> tuple[bytes, str]:
         """Returns (csv_bytes, filename)"""
         user_id = self.get_current_user_id()
-        return self.task_service.generate_report(user_id=user_id)
+        return self.report_service.generate_report(user_id=user_id)
