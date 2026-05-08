@@ -1,4 +1,4 @@
-"""UI Controllers – Orchestration layer (Developer 4)."""
+"""UI Controllers – Orchestration layer"""
 
 from __future__ import annotations
 from datetime import datetime
@@ -6,20 +6,19 @@ from typing import List, Optional
 
 from nicegui import app
 
-# Correct imports - use your actual models
 from task_tracker_app.models.task import Task
 from task_tracker_app.models.task_instance import TaskInstance
 from task_tracker_app.models.enums import Priority, Interval, Status
 
-##from task_tracker_app.services.task_service import TaskService
-##from task_tracker_app.services.auth_service import AuthService
+from task_tracker_app.services.task_service import TaskService
+from task_tracker_app.services.auth_service import AuthService
 
 
 class AuthController:
     """Handles all authentication-related logic for the UI."""
 
-    #def __init__(self, auth_service: AuthService):
-        #self.auth_service = auth_service
+    def __init__(self, auth_service: AuthService):
+        self.auth_service = auth_service
 
     def login(self, username: str, password: str) -> bool:
         """Authenticate user and set session."""
@@ -50,8 +49,8 @@ class AuthController:
 class TaskController:
     """Orchestrates task operations between UI and business logic."""
 
-    #def __init__(self, task_service: TaskService) -> None:
-        #self.task_service = task_service
+    def __init__(self, task_service: TaskService) -> None:
+        self.task_service = task_service
 
     def get_current_user_id(self) -> int:
         user_id = app.storage.user.get("user_id")

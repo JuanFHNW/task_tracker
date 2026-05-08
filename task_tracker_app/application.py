@@ -6,8 +6,8 @@ from nicegui import ui
 
 from .data_access.db import Database
 from .data_access.dao import UserDAO, TaskDAO, TaskInstanceDAO
-#from .services.auth_service import AuthService
-#from .services.task_service import TaskService
+from .services.auth_service import AuthService
+from .services.task_service import TaskService
 from .ui.controllers import AuthController, TaskController
 #from .ui.pages import Pages
 
@@ -27,13 +27,9 @@ class TaskApplication:
         self.task_dao = TaskDAO(engine)
         self.task_instance_dao = TaskInstanceDAO(engine)
 
-        # 3. Service Layer (Business Logic)
-        #self.auth_service = AuthService(user_dao=self.user_dao)
-        #self.task_service = TaskService(
-           # task_dao=self.task_dao,
-            #task_instance_dao=self.task_instance_dao,
-            #database=self.database,          # Needed for transactional scope
-        #)
+        # 3. Service Layer
+        self.auth_service = AuthService(database=self.database)
+        self.auth_service = TaskService(database=self.database)
 
         # 4. Controller Layer (Orchestration)
         self.auth_controller = AuthController(auth_service=self.auth_service)
