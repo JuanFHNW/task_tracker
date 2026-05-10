@@ -7,6 +7,7 @@ from nicegui import ui
 from .data_access.db import Database
 from .data_access.dao import UserDAO, TaskDAO, TaskInstanceDAO
 from .services.auth_service import AuthService
+from .services.report_service import ReportService
 from .services.task_service import TaskService
 from .ui.controllers import AuthController, TaskController
 from .ui.pages import Pages

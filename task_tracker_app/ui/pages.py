@@ -72,11 +72,15 @@ class Pages:
                 with ui.dialog() as dialog, ui.card().classes("w-full max-w-md"):
                     ui.label("New Task").classes("text-h6")
                     desc = ui.input("Description").classes("w-full")
-                    prio = ui.select({p.value: p.value for p in Priority}, value="MEDIUM", label="Priority")
+                    ui.label("Priority")
+                    prio = ui.select({p.value: p.value for p in Priority}, value="MEDIUM")
                     recurring = ui.checkbox("Recurring Task")
-                    interval_select = ui.select({i.value: i.value for i in Interval}, label="Interval", visible=False)
-                    due_date = ui.date(label="Due Date")
+                    interval_label = ui.label("Interval")
+                    interval_select = ui.select({i.value: i.value for i in Interval})
+                    ui.label("Due Date")
+                    due_date = ui.date()
 
+                    interval_label.bind_visibility_from(recurring, "value")
                     interval_select.bind_visibility_from(recurring, "value")
 
                     def save():
