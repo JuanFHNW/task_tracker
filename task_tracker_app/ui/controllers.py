@@ -79,10 +79,10 @@ class TaskController:
         return self.task_service.create_task(
             description=description,
             priority=Priority(priority.upper()),
+            user_id=user_id,
             interval=Interval(interval) if interval else None,
             end_date=end_date,
-            due_date=due_date,           # Passed to service for first instance
-            user_id=user_id
+            due_date=due_date
         )
 
     # ==================== READ ====================

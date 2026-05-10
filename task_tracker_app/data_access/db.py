@@ -27,7 +27,28 @@ class Database:
             echo=echo, 
             connect_args={"check_same_thread": False} #check_same_thread=False for NiceGUI
         )
-        self.init_schema() # Automatically create tables on first startup
+        try:
+            self.init_schema() # Automatically create tables on first startup
+        except Exception as e:
+            print(f"WARNING: Error initializing database schema: {e}")
+            print("Attempting to recreate database...")
+            # Try to recreate the database by removing the old file
+            try:
+                self._engine.dispose()
+                db_path = Path("data/task_tracker.db")
+                if db_path.exists():
+                    db_path.unlink()
+                    print(f"Deleted corrupted database: {db_path}")
+                self._engine = create_engine(
+                    self._database_url, 
+                    echo=echo, 
+                    connect_args={"check_same_thread": False}
+                )
+                self.init_schema()
+                print("Database recreated successfully")
+            except Exception as recovery_error:
+                print(f"ERROR: Failed to recover database: {recovery_error}")
+                raise
         self._initialized = True # Mark singleton as fully set up
 
     @staticmethod
