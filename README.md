@@ -1,6 +1,6 @@
 # 🌐 Task Tracker Web Pro
 
-! [UI Showcase] ("C:\Users\berna\Pictures\Screenshots\Screenshot 2026-05-11 105542.png")
+![UI task_tracker](menu_task_tracker.png)
 
 ---
 
@@ -214,5 +214,13 @@ To ensure the application meets the needs of its end-users, the following requir
 | **Expected result** | A downloadable file (.csv/.xlsx) is generated with task statistics |
 | **Status** | Pass |
 
+---
 
+### Wireframes / Mockups
+
+![UI task_tracker](log_in_task_tracker.png)
+
+![UI task_tracker](new_task_task_tracker.png)
+
+---
 
