@@ -5,6 +5,7 @@ from datetime import datetime, date
 from nicegui import ui
 
 from task_tracker_app.models.enums import Priority, Interval
+from task_tracker_app.services.task_service import is_overdue
 from .controllers import AuthController, TaskController
 
 
@@ -310,6 +311,7 @@ class Pages:
                         "end_date": t.end_date.strftime("%Y-%m-%d") if t.end_date else "",
                         "due_date": latest.due_date.strftime("%Y-%m-%d") if latest and latest.due_date else "",
                         "status": latest.status.value if latest else "TODO",
+                        "overdue": bool(latest and is_overdue(latest)),
                         "id": t.id,
                     })
                 total_value.text = str(total_count)
@@ -374,15 +376,20 @@ class Pages:
 
             task_table.add_slot("body-cell-status", '''
                 <q-td :props="props">
-                    <q-badge :color="props.row.status === 'DONE' ? 'green' : (props.row.status === 'IN_PROGRESS' ? 'blue' : 'grey')" class="text-white">
-                        {{ props.row.status }}
-                    </q-badge>
+                    <div class="row items-center q-gutter-x-xs">
+                        <q-badge :color="props.row.status === 'DONE' ? 'green' : (props.row.status === 'IN_PROGRESS' ? 'blue' : 'grey')" class="text-white">
+                            {{ props.row.status }}
+                        </q-badge>
+                        <q-badge v-if="props.row.overdue && props.row.status !== 'DONE'" color="red" class="text-white">
+                            OVERDUE
+                        </q-badge>
+                    </div>
                 </q-td>
             ''')
 
             task_table.add_slot("body-cell-description", '''
                 <q-td :props="props">
-                    <span :class="props.row.status === 'DONE' ? 'text-grey-6 line-through' : ''">
+                    <span :class="props.row.status === 'DONE' ? 'text-grey-6 line-through' : (props.row.overdue ? 'text-red-7 font-medium' : '')">
                         {{ props.row.description }}
                     </span>
                 </q-td>
