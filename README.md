@@ -269,3 +269,54 @@ direction TB
     Report ..> Task : processes
 ```
 
+## ✅ Project Requirements
+
+> ❗ Requirements act as a contract: implement and demonstrate each point below.
+
+Each app must meet the following criteria in order to be accepted (see also the official project guidelines PDF on Moodle):
+
+1. Using NiceGUI for building an interactive web app
+2. Data validation in the app
+3. Using an ORM for database management
+
+---
+
+### 1. Browser-based App (NiceGUI)
+
+> ❗ In this section, document how your project fulfills each criterion.
+
+The application runs in the browser, built with NiceGUI. From the browser, users can:
+
+* Log in with a personal account and stay signed in across pages
+* Create one-time tasks or recurring tasks (daily, weekly, monthly)
+* Start and finish individual tasks with one click
+* Open a task to see its full execution history
+* Filter and search the task list by description, priority, and type
+* Download a CSV report of their task history
+
+**Architecture note (per SS26 guidelines):** the browser only displays the UI and sends events. All state and business logic stay on the server, keeping the client lightweight.
+
+---
+
+### 2. Data Validation
+
+The app checks user input in three places, so wrong or missing data never reaches the database:
+
+* **In the database model:** required fields cannot be empty, usernames must be unique, and category fields like priority, status, and interval only accept predefined values (e.g. `LOW`, `MEDIUM`, `HIGH`).
+* **In the business logic:** the app refuses duplicate usernames, rejects wrong passwords, prevents users from editing or deleting tasks they don't own, and stops a recurring task from continuing past its configured end date.
+* **In the UI:** each input uses the right widget for its type (dropdowns for fixed choices, date pickers for dates, number inputs for numbers), so invalid values can't even be submitted.
+
+These checks prevent crashes and guide the user to provide correct input, matching the validation requirements described in the project guidelines.
+
+---
+
+### 3. Database Management
+
+Persistent storage uses an ORM (**SQLModel**) on top of **SQLite**, so the code works with Python objects instead of writing SQL by hand. For the Task Tracker this means:
+
+* **Three related tables** — Users, Tasks, and Task Instances — linked so you can navigate from a user to their tasks and from a task to its executions.
+* **Clean structure** — a recurring task is stored once and only its individual executions are repeated, instead of duplicating the whole task.
+* **DAO pattern** — each table has its own access object responsible for reading and writing it. The rest of the app uses these objects instead of running queries directly.
+* **Safe transactions** — when a new task is created, both the task and its first execution are saved together; if anything fails, nothing is saved.
+* **No raw SQL** — all queries go through the ORM, which protects against common database mistakes and SQL injection.
+
