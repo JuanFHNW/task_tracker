@@ -248,3 +248,18 @@ The application is built using a **professional three-tier architecture** to ens
 
 
 ---
+
+## 🗄️ Database and ORM
+
+![ERM Diagram](docs/erm_task_tracker.png)
+
+The application uses **SQLModel** to map domain objects to a local **SQLite** database. This approach allows for type-safe database interactions and seamless integration with the NiceGUI frontend.
+
+### Entities
+- **`User`**: Represents the system users, storing hashed credentials and profile information.
+- **`Task`**: The core entity containing task descriptions, priority levels, and metadata.
+- **`TaskInstance`**: Specifically for **Recurring Tasks**, these represent individual occurrences of a repeating task.
+
+### Relationships
+- **One `User` → many `Tasks`**: Each task is owned by exactly one user, ensuring data privacy and personalized lists.
+- **One `Task` → many `TaskInstances`**: A single recurring task definition can generate multiple instances over time as they are completed.
