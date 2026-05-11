@@ -1,5 +1,9 @@
 # 🌐 Task Tracker Web Pro
 
+! [UI Showcase] ("C:\Users\berna\Pictures\Screenshots\Screenshot 2026-05-11 105542.png")
+
+---
+
 **Task Tracker Web Pro** is the full-stack evolution of our initial console-based application. Migrated for the **Advanced Programming** module, this version transforms a simple CLI into a modern, browser-based productivity suite. It leverages a professional software architecture featuring a dedicated frontend, backend, and persistent database layer.
 
 
