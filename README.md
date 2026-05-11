@@ -49,7 +49,10 @@ To ensure the application meets the needs of its end-users, the following requir
 ### 📊 Reporting & Export
 * **As a user**, I want a **"Download Report" button** that immediately exports my task statistics into an **Excel/CSV file** so I can track my long-term productivity offline with one click.
 
-## User Cases
+## Use Cases
+
+![use_case_diagram task_tracker](docs/ucd_task_tracker.png)
+
 
 ### 🔑 Access & Security
 | Field | Details |
