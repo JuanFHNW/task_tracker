@@ -1,5 +1,9 @@
 # 🌐 Task Tracker Web Pro
 
+![UI task_tracker](menu_task_tracker.png)
+
+---
+
 **Task Tracker Web Pro** is the full-stack evolution of our initial console-based application. Migrated for the **Advanced Programming** module, this version transforms a simple CLI into a modern, browser-based productivity suite. It leverages a professional software architecture featuring a dedicated frontend, backend, and persistent database layer.
 
 
@@ -210,5 +214,52 @@ To ensure the application meets the needs of its end-users, the following requir
 | **Expected result** | A downloadable file (.csv/.xlsx) is generated with task statistics |
 | **Status** | Pass |
 
+---
+
+### Wireframes / Mockups
+
+![UI task_tracker](log_in_task_tracker.png)
+
+![UI task_tracker](new_task_task_tracker.png)
+
+---
+## 🏛️ Architecture
+
+![architecture task_tracker](docs/architecture_task_tracker.png)
+
+### Layers
+The application is built using a **professional three-tier architecture** to ensure a clean separation of concerns:
+
+- **UI Layer:** Built with **NiceGUI**, providing a browser-based interface where the UI state and components are managed securely as Python objects on the server.
+- **Application Logic Layer:** Consists of **Controllers** and **Services**.
+    - **Controllers:** Orchestrate the interaction between UI pages and backend services.
+    - **Services:** Encapsulate business logic, such as `TaskService` for lifecycle management, `AuthService` for security, and `ReportService` for data exports.
+- **Persistence Layer:** Utilizes **SQLite** combined with **SQLModel (ORM)** and the **Data Access Object (DAO)** pattern.
+
+### Design Decisions
+- **MVC Structure (Model–View–Controller):** A layered MVC variant is used to decouple user interactions from business objects, making the project easier to understand and test.
+- **Clear Separation of Concerns:** Business logic in the Service layer remains independent of the UI components in the Page layer.
+- **Relational Persistence:** Data management has been migrated to a robust SQLite database using an ORM to avoid direct SQL and ensure modularity.
+
+### Design Patterns Used
+- **Model-View-Controller / Layered MVC:** Ideal for applications with graphical interfaces and database access, ensuring that UI logic and domain logic are separated.
+- **Facade Pattern:** Implemented in `db.py`, this pattern hides the technical details of database engine initialization and session management from the rest of the application.
+- **Singleton Pattern:** The database connection and engine initialization follow a Singleton-like approach within `db.py`. This ensures that the application maintains a single, consistent point of access to the database engine, preventing redundant connections and resource leaks.
 
 
+---
+
+## 🗄️ Database and ORM
+
+![ERM Diagram](docs/erm_task_tracker.png)
+
+The application uses **SQLModel** to map domain objects to a local **SQLite** database. This approach allows for type-safe database interactions and seamless integration with the NiceGUI frontend.
+
+### Entities
+- **`User`**: Represents the system users, storing hashed credentials and profile information.
+- **`Task`**: The core entity containing task descriptions, priority levels, and metadata.
+- **`TaskInstance`**: Specifically for **Recurring Tasks**, these represent individual occurrences of a repeating task.
+
+### Relationships
+- **One `User` → many `Tasks`**: Each task is owned by exactly one user, ensuring data privacy and personalized lists.
+- **One `Task` → many `TaskInstances`**: A single recurring task definition can generate multiple instances over time as they are completed.
