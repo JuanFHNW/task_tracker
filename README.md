@@ -49,7 +49,10 @@ To ensure the application meets the needs of its end-users, the following requir
 ### 📊 Reporting & Export
 * **As a user**, I want a **"Download Report" button** that immediately exports my task statistics into an **Excel/CSV file** so I can track my long-term productivity offline with one click.
 
-## User Cases
+## Use Cases
+
+![use_case_diagram task_tracker](docs/ucd_task_tracker.png)
+
 
 ### 🔑 Access & Security
 | Field | Details |
@@ -263,3 +266,17 @@ The application uses **SQLModel** to map domain objects to a local **SQLite** da
 ### Relationships
 - **One `User` → many `Tasks`**: Each task is owned by exactly one user, ensuring data privacy and personalized lists.
 - **One `Task` → many `TaskInstances`**: A single recurring task definition can generate multiple instances over time as they are completed.
+
+---
+
+## 👥 Team & Contributions
+
+
+| Name | Contribution |
+| :--- | :--- |
+| Bernardo Alfonso Suárez Espinoza | NiceGUI UI + documentation |
+| Janusz Büeler | Business Logic + testing + documentation |
+| Juan Vock | DataBase ORM + testing + documentation |
+| Fernando Mauracher García | Controller + documentation |
+
+---
