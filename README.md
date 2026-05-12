@@ -266,3 +266,17 @@ The application uses **SQLModel** to map domain objects to a local **SQLite** da
 ### Relationships
 - **One `User` → many `Tasks`**: Each task is owned by exactly one user, ensuring data privacy and personalized lists.
 - **One `Task` → many `TaskInstances`**: A single recurring task definition can generate multiple instances over time as they are completed.
+
+---
+
+## 👥 Team & Contributions
+
+
+| Name | Contribution |
+| :--- | :--- |
+| Bernardo Alfonso Suárez Espinoza | NiceGUI UI + documentation |
+| Janusz Büeler | Database & ORM + documentation |
+| Juan Vock | Business logic + documentation |
+| Fernando Mauracher García | Business logic + documentation |
+
+---
