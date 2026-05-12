@@ -275,8 +275,8 @@ The application uses **SQLModel** to map domain objects to a local **SQLite** da
 | Name | Contribution |
 | :--- | :--- |
 | Bernardo Alfonso Suárez Espinoza | NiceGUI UI + documentation |
-| Janusz Büeler | Database & ORM + documentation |
-| Juan Vock | Business logic + documentation |
-| Fernando Mauracher García | Business logic + documentation |
+| Janusz Büeler | Business Logic + testing + documentation |
+| Juan Vock | DataBase ORM + testing + documentation |
+| Fernando Mauracher García | Controller + documentation |
 
 ---
