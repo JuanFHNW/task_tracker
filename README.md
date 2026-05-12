@@ -360,6 +360,54 @@ The application uses **SQLModel** to map domain objects to a local **SQLite** da
 
 ---
 
+## 📂 Repository Structure
+
+ 
+
+```text
+task_tracker_app/
+├── __main__.py
+├── application.py
+├── data_access/
+│   ├── __init__.py
+│   ├── base_dao.py
+│   ├── dao.py
+│   └── db.py
+├── models/
+│   ├── __init__.py
+│   └── enums.py
+│   └── task.py
+│   └── task_instance.py
+│   └── user.py
+├── services/
+│   ├── __init__.py
+│   ├── auth_service.py
+│   ├── report_service.py
+│   ├── task_service.py
+└── ui/
+    ├── __init__.py
+    ├── controllers.py
+    └── pages.py
+```
+---
+
+### How to Run
+
+### **1. Prerequisites**
+ * Python 3.10+
+
+### **2. Clone the repo**
+
+### **3. Create & activate a virtual environment**
+
+### **4. Install dependencies**
+ * NiceGUI, SQLmodel, and sqlalchemy, plus pytest as optional for tests
+
+### **5. Start the app**
+ * Via python run the file __main__.py
+
+---
+
 ## 👥 Team & Contributions
 
 
