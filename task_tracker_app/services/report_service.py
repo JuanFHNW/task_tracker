@@ -48,33 +48,6 @@ class ReportService:
         filename = f"task_report_user{user_id}_{timestamp}.csv"
         return buffer.getvalue().encode("utf-8"), filename
 
-    def summary(self, user_id: int) -> dict:
-        """Quick aggregate stats for a dashboard widget."""
-        with self.database.session_scope() as session:
-            task_dao = TaskDAO(session)
-            instance_dao = TaskInstanceDAO(session)
-            tasks = task_dao.get_tasks_by_user(user_id)
-
-            total_tasks = len(tasks)
-            total_instances = 0
-            done_count = 0
-            overdue_count = 0
-            for task in tasks:
-                instances = instance_dao.get_full_history(task.id)
-                total_instances += len(instances)
-                for inst in instances:
-                    if inst.completed_at is not None:
-                        done_count += 1
-                    elif is_overdue(inst):
-                        overdue_count += 1
-
-            return {
-                "total_tasks": total_tasks,
-                "total_instances": total_instances,
-                "completed": done_count,
-                "overdue": overdue_count,
-            }
-
     # ---------- internals ----------
 
     def _collect_rows(self, user_id: int) -> list[tuple]:

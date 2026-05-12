@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 from datetime import datetime
-from typing import List, Optional
+from typing import List
 
 from nicegui import app
 
@@ -42,10 +42,6 @@ class AuthController:
 
     def is_authenticated(self) -> bool:
         return app.storage.user.get("authenticated", False)
-
-    def get_current_user_id(self) -> Optional[int]:
-        """Helper used by TaskController."""
-        return app.storage.user.get("user_id")
 
     def get_current_username(self) -> str:
         return app.storage.user.get("username", "Guest")
@@ -90,10 +86,6 @@ class TaskController:
         """List only the current user's visible master tasks."""
         user_id = self.get_current_user_id()
         return self.task_service.list_tasks(user_id=user_id)
-
-    def get_task(self, task_id: int) -> Optional[Task]:
-        """Get a single task (with ownership check in service)."""
-        return self.task_service.get_task(task_id)
 
     def get_task_with_history(self, task_id: int) -> dict:
         """Useful for master-detail view: task + all its instances."""

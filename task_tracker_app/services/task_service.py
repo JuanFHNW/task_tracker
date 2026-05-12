@@ -96,11 +96,6 @@ class TaskService:
             tasks = task_dao.get_tasks_by_user(user_id)
             return [t for t in tasks if t.is_visible]
 
-    def get_task(self, task_id: int) -> Task | None:
-        with self.database.session_scope() as session:
-            task_dao = TaskDAO(session)
-            return task_dao.get_by_id(task_id)
-
     def get_task_with_history(self, task_id: int) -> dict:
         """Return {'task': Task, 'instances': list[TaskInstance]} for master-detail."""
         with self.database.session_scope() as session:
