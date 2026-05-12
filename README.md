@@ -396,15 +396,34 @@ task_tracker_app/
 ### **1. Prerequisites**
  * Python 3.10+
 
-### **2. Clone the repo**
+### **2. Create & activate a virtual environment**
+   - **macOS/Linux:**
+      ```bash
+      python3 -m venv .venv
+      source .venv/bin/activate
+      ```
+   - **Windows:**
+      ```bash
+      python -m venv .venv
+      .venv\Scripts\Activate
+      ```
 
-### **3. Create & activate a virtual environment**
+### **3. Install dependencies**
+ ```bash
+   pip install nicegui sqlmodel sqlalchemy pytest
+   ```
 
-### **4. Install dependencies**
- * NiceGUI, SQLmodel, and sqlalchemy, plus pytest as optional for tests
-
-### **5. Start the app**
+### **4. Start the app**
  * Via python run the file __main__.py
+
+###  5. Usage
+
+1. Register/log in
+2. Create a task
+3. Edit or delete a task
+4. Search and filter tasks
+5. Complete tasks
+6. Download a report
 
 ---
 
