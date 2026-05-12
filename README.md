@@ -21,33 +21,124 @@ Users often struggle to manage daily tasks because existing tools are either ove
 * **Relational Persistence:** We have migrated from basic JSON storage to a robust **SQLite database**. Data is handled through an **Object-Relational Mapper (ORM)** to avoid direct SQL and ensure modularity.
 * **Secure Access & Reporting:** The new version introduces a **Login System** for personalized task management and a **Reporting Module** to analyze productivity and download performance statistics.
 * **Object-Oriented Architecture:** The backend utilizes modular Python units to organize business logic into self-contained, reusable components.
+---
 
 ## 👥 User Stories
 To ensure the application meets the needs of its end-users, the following requirements have been defined:
 
-### 🔑 Access & Security
-* **As a user**, I want to **log in with my username and password** so that I can securely view and manage my personal task list.
-* **As a user**, I want my data to be **automatically saved** so that I never lose my progress or task history when I close the application.
+### 1. Secure Login
+**As a user, I want to log in with my username and password so that I can securely view and manage my personal task list.**
 
-### 📝 Task Operations
+- **Input:**
+   * **Username:**
+  <kbd>Username</kbd> : pro_user
+  <kbd>Password</kbd> : password123
+- **Output:**
+   * **UI:** Redirects to the Dashboard and shows the user-specific task list, AuthService validates the hashed password and creates an active session.
+---
 
-* **As a user**, I want to **create new tasks** with descriptions and dates so that I can keep track of upcoming responsibilities.
-* **As a user**, I want to **edit existing tasks** so that I can update details as my plans and circumstances change.
-* **As a user**, I want to **delete specific tasks** so that I can remove items that are no longer relevant to my workload.
-* **As a user**, I want the option to **cancel a current action** via a button to prevent saving unwanted changes or accidental entries.
+### 2. Data Persistence
+**As a user, I want my data to be automatically saved so that I never lose my progress.**
 
-### 🔍 Discovery & Organization
+- **Input:** Any create, update, or delete action. 
+- **Output:**
+   * **UI:** Success notification (e.g., toast message).
+   * **System:** The SQLModel session commits changes to the task_tracker.db file immediately.
+---
 
-* **As a user**, I want to **filter and search my tasks by multiple criteria** (description keywords, date, priority level, and task type) so that I can instantly drill down to the exact subset of tasks I need to focus on.
-* **As a user**, I want to **assign priority levels** (Low, Medium, High) to my tasks to visually distinguish my most critical work from minor to-dos.
+### 3. Create New Tasks
+**As a user, I want to create new tasks with descriptions and dates so that I can track responsibilities.**
 
+- **Input:**
+   * **Description:** Prepare for Statistics retake.
+   * **Date:** 2026-06-25
+- **Output:**
+   * **UI:** New task card appears in the main dashboard view.
+   * **System:** A new row is inserted into the Task table with a pending status.
+---
 
-### 🧬 Specialized Task Behaviors
-* **As a user**, I want to create **Deadline Tasks** that automatically flag themselves as "Overdue" if the date passes, ensuring I don't miss urgent milestones.
-* **As a user**, I want to create **Recurring Tasks** that automatically renew themselves for a future date once finished, eliminating the need for manual re-entry.
+### 4. Edit Existing Tasks
+**As a user, I want to edit existing tasks so that I can update details as plans change.**
 
-### 📊 Reporting & Export
-* **As a user**, I want a **"Download Report" button** that immediately exports my task statistics into an **Excel/CSV file** so I can track my long-term productivity offline with one click.
+- **Input:** Task ID <kbd>int</kbd>, updated fields (description, date, or priority).
+- **Output:**
+   * **UI:** The task card reflects the new description without requiring a manual refresh.
+   * **System:** <kbd>TaskService</kbd> updates the specific <kbd>Task_ID</kbd> in the database.
+---
+
+### 5. Delete Tasks
+**As a user, I want to delete specific tasks so that I can remove irrelevant items.**
+
+- **Input:**
+   * **Action:** Click "Delete" on Task #101.
+- **Output:**
+   * **UI:** The task card is removed from the DOM.
+   * **System:** The database record for Task #101 is deleted.
+---
+
+### 6. Cancel Action
+**As a user, I want the option to cancel a current action to prevent accidental entries.**
+
+- **Input:**
+   * **Action:** Click "Cancel" button in the "New Task" modal.
+- **Output:**
+   * **UI:** Modal closes and clears all unsaved input fields.
+   * **System:** No database session is opened; state remains unchanged.
+---
+
+### 7. Multi-Criteria Filtering
+**As a user, I want to filter tasks by keywords and priority to focus on specific work.**
+
+- **Input:**
+   * **Search:** "Report".
+   * **Filter:** "High Priority".
+- **Output:**
+   * **UI:** The task list updates instantly to show only matching tasks.
+   * **System:** The app filters the database records to find tasks that contain the keyword AND match the selected priority.
+---
+
+### 8. Priority Assignment
+**As a user, I want to assign priority levels to visually distinguish my work.**
+
+- **Input:**
+   * **Priority Select:** "Medium".
+- **Output:**
+   * **UI:** The task is styled with a distinct color-coded badge (e.g., Orange for Medium).
+   * **System:** The <kbd>priority</kbd> attribute of the Task object is updated.
+---
+
+### 9. Deadline Tracking
+**As a user, I want to create Deadline Tasks that flag themselves as "Overdue."**
+
+- **Input:**
+   * **Type:** "Deadline".
+   * **Due Date:** Yesterday's date.
+- **Output:**
+   * **UI:** Task displays a prominent red "Overdue" badge.
+   * **System:** A logical check <kbd>due_date < current_date</kbd> triggers the status update.
+---
+
+### 10. Task Recursion
+**As a user, I want to create Recurring Tasks that renew themselves automatically.**
+
+- **Input:**
+   * **Task Type:** "Recurring".
+   * **Action:** User marks task as "Completed."
+- **Output:**
+   * **UI:** The current instance disappears; a new instance appears for the next interval.
+   * **System:** <kbd>TaskService</kbd> archives the old instance and instantiates a new <kbd>TaskInstance</kbd>.
+---
+
+### 11. Productivity Export
+**As a user, I want a "Download Report" button to export statistics.**
+
+- **Input:**
+   * **Action:** Click "Download Report."
+- **Output:**
+   * **UI:** Browser initiates a download for <kbd>task_data.csv</kbd>.
+   * **System:** <kbd>ReportService</kbd> generates a CSV file from the aggregated task data.
+---
+
 
 ## Use Cases
 
@@ -266,6 +357,73 @@ The application uses **SQLModel** to map domain objects to a local **SQLite** da
 ### Relationships
 - **One `User` → many `Tasks`**: Each task is owned by exactly one user, ensuring data privacy and personalized lists.
 - **One `Task` → many `TaskInstances`**: A single recurring task definition can generate multiple instances over time as they are completed.
+
+---
+
+## 📂 Repository Structure
+
+ 
+
+```text
+task_tracker_app/
+├── __main__.py
+├── application.py
+├── data_access/
+│   ├── __init__.py
+│   ├── base_dao.py
+│   ├── dao.py
+│   └── db.py
+├── models/
+│   ├── __init__.py
+│   └── enums.py
+│   └── task.py
+│   └── task_instance.py
+│   └── user.py
+├── services/
+│   ├── __init__.py
+│   ├── auth_service.py
+│   ├── report_service.py
+│   ├── task_service.py
+└── ui/
+    ├── __init__.py
+    ├── controllers.py
+    └── pages.py
+```
+---
+
+### How to Run
+
+### **1. Prerequisites**
+ * Python 3.10+
+
+### **2. Create & activate a virtual environment**
+   - **macOS/Linux:**
+      ```bash
+      python3 -m venv .venv
+      source .venv/bin/activate
+      ```
+   - **Windows:**
+      ```bash
+      python -m venv .venv
+      .venv\Scripts\Activate
+      ```
+
+### **3. Install dependencies**
+ ```bash
+   pip install nicegui sqlmodel sqlalchemy pytest
+   ```
+
+### **4. Start the app**
+ * Via python run the file __main__.py
+
+###  5. Usage
+
+1. Register/log in
+2. Create a task
+3. Edit or delete a task
+4. Search and filter tasks
+5. Complete tasks
+6. Download a report
 
 ---
 
