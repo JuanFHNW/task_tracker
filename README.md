@@ -145,7 +145,7 @@ To ensure the application meets the needs of its end-users, the following requir
 ![use_case_diagram task_tracker](docs/ucd_task_tracker.png)
 
 
-   ## ✅ Automated Test Cases#
+   ## ✅ Automated Test Cases
 
    The repository includes an automated pytest suite targeted at three levels: unit, database (persistence), and integration tests. The test files are located in the `tests/` folder and use the shared fixtures in `conftest.py`.
 
