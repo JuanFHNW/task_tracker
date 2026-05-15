@@ -145,168 +145,170 @@ To ensure the application meets the needs of its end-users, the following requir
 ![use_case_diagram task_tracker](docs/ucd_task_tracker.png)
 
 
-### 🔑 Access & Security
+   ## ✅ Automated Test Cases (Table Template)
+
+   The repository includes an automated pytest suite targeted at three levels: unit, database (persistence), and integration tests. The test files are located in the `tests/` folder and use the shared fixtures in `conftest.py`.
+
+   Test run summary: **14 passed** (executed via `pytest` in this workspace).
+
+   Below are the 12 canonical test cases implemented in `tests/`, each presented as a table with the requested rows and updated with actual results.
+
+### TC_001
 | Field | Details |
-| :--- | :--- |
-| **User case ID** | TC_001 |
-| **User case title/description** | Verify that a user can log in with valid username and password  |
-| **Preconditions** | - User is registered; - Login page is accessible  |
-| **User steps** | 1. Open login page; 2. Enter username `pro_user`; 3. Enter password `Password@123`; 4. Click Login  |
-| **User data/input** | Username: `pro_user`, Password: `Password@123`  |
-| **Expected result** | User is logged in successfully and dashboard is displayed  |
-| **Status** | Pass |
+| --- | --- |
+| Test case ID | TC_001 |
+| Test case title/description | _next_due_date computes correct offset for intervals |
+| Preconditions | None (pure function) |
+| Test steps | Call `_next_due_date(now, interval)` for Daily/Weekly/Monthly |
+| Test data/input | `now = 2026-05-01T12:00:00`; `Interval = DAILY/WEEKLY/MONTHLY` |
+| Expected result | `next_due - now == 1 day / 7 days / 30 days` respectively |
+| Actual result | Pass (function returned expected offsets) |
+| Status | Pass |
+| Comments | Verified by automated unit test `test_next_due_date_intervals` |
 
+### TC_002
 | Field | Details |
-| :--- | :--- |
-| **User case ID** | TC_002 |
-| **User case title/description** | Verify login failure with incorrect password |
-| **Preconditions** | User is registered; Login page is accessible |
-| **User steps** | 1. Enter valid username; 2. Enter incorrect password; 3. Click Login |
-| **User data/input** | Username: `pro_user`, Password: `WrongPassword` |
-| **Expected result** | System rejects login and displays an error message |
-| **Status** | Pass |
+| --- | --- |
+| Test case ID | TC_002 |
+| Test case title/description | _next_due_date raises on unsupported interval |
+| Preconditions | None |
+| Test steps | Call `_next_due_date(now, unsupported)` |
+| Test data/input | `now`; `interval = object()` (unsupported) |
+| Expected result | `ValueError` is raised |
+| Actual result | Pass (ValueError raised) |
+| Status | Pass |
+| Comments | Verified by unit test `test_next_due_date_unsupported_raises` |
 
+### TC_003
 | Field | Details |
-| :--- | :--- |
-| **User case ID** | TC_003 |
-| **User case title/description** | Verify user can securely log out of the system |
-| **Preconditions** | User is currently logged in |
-| **User steps** | 1. Click the "Logout" button |
-| **User data/input** | N/A |
-| **Expected result** | Session is terminated and user is redirected to login screen |
-| **Status** | Pass |
+| --- | --- |
+| Test case ID | TC_003 |
+| Test case title/description | is_overdue returns True only for past, incomplete instances |
+| Preconditions | None |
+| Test steps | Create instances for past, equal-time, and completed; call `is_overdue(now)` |
+| Test data/input | past `due_date = now - 1d`, equal `due_date = now`, completed `completed_at = now` |
+| Expected result | overdue True for past incomplete; False for equal-time and completed |
+| Actual result | Pass (behavior matches expectations) |
+| Status | Pass |
+| Comments | Verified by unit test `test_is_overdue_true_and_false` |
 
----
-
-### 📝 Task Operations
+### TC_004
 | Field | Details |
-| :--- | :--- |
-| **User case ID** | TC_004 |
-| **User case title/description** | Verify creation of a new standard task |
-| **Preconditions** | User is logged in and on the dashboard |
-| **User steps** | 1. Click "New Task"; 2. Enter description; 3. Select Priority; 4. Click Save |
-| **User data/input** | Description: "Buy groceries", Priority: "Medium" |
-| **Expected result** | Task appears in the list and is saved to the SQLite database |
-| **Status** | Pass |
+| --- | --- |
+| Test case ID | TC_004 |
+| Test case title/description | duration_seconds returns None for incomplete instances |
+| Preconditions | None |
+| Test steps | Create `TaskInstance` with no `started_at` or `completed_at`; call `duration_seconds` |
+| Test data/input | instance with `started_at=None`, `completed_at=None` |
+| Expected result | `duration_seconds` returns `None` |
+| Actual result | Pass (returned `None`) |
+| Status | Pass |
+| Comments | Verified by unit test `test_duration_seconds_none_when_incomplete` |
 
+### TC_005
 | Field | Details |
-| :--- | :--- |
-| **User case ID** | TC_005 |
-| **User case title/description** | Verify that an existing task can be updated |
-| **Preconditions** | A task already exists in the database |
-| **User steps** | 1. Click "Edit" on a task; 2. Change the description; 3. Click Save |
-| **User data/input** | New Description: "Buy organic groceries" |
-| **Expected result** | The task description is updated in the UI and database |
-| **Status** | Pass |
+| --- | --- |
+| Test case ID | TC_005 |
+| Test case title/description | duration_seconds computes positive and negative durations |
+| Preconditions | None |
+| Test steps | Create instances where `completed_at > started_at` and vice versa; call `duration_seconds` |
+| Test data/input | `start=09:00 end=10:30` → expect `5400s`; reversed → expect `-5400s` |
+| Expected result | Positive and negative durations computed correctly |
+| Actual result | Pass (computed 5400s and -5400s) |
+| Status | Pass |
+| Comments | Verified by unit test `test_duration_seconds_positive_and_negative` |
 
+### TC_006
 | Field | Details |
-| :--- | :--- |
-| **User case ID** | TC_006 |
-| **User case title/description** | Verify removal of a task from the list |
-| **Preconditions** | At least one task exists for the user |
-| **User steps** | 1. Click the "Delete" icon; 2. Confirm deletion |
-| **User data/input** | Target Task ID: 101 |
-| **Expected result** | Task is removed from the UI and the database record is deleted |
-| **Status** | Pass |
+| --- | --- |
+| Test case ID | TC_006 |
+| Test case title/description | is_overdue treats `due_date == reference` as not overdue |
+| Preconditions | None |
+| Test steps | Create `TaskInstance` with `due_date == now` and `completed_at=None`; call `is_overdue(now)` |
+| Test data/input | `due_date == now` |
+| Expected result | `is_overdue` returns `False` |
+| Actual result | Pass (returned False) |
+| Status | Pass |
+| Comments | Verified by unit test `test_is_overdue_true_and_false` (equal-time case) |
 
+### TC_007
 | Field | Details |
-| :--- | :--- |
-| **User case ID** | TC_007 |
-| **User case title/description** | Verify "Cancel" button prevents unwanted changes |
-| **Preconditions** | "Edit Task" or "New Task" modal is open |
-| **User steps** | 1. Modify task details; 2. Click "Cancel" |
-| **User data/input** | Description: "Mistake task" |
-| **Expected result** | Modal closes; no new task is created and no changes are saved |
-| **Status** | Pass |
+| --- | --- |
+| Test case ID | TC_007 |
+| Test case title/description | init_schema allows DAO to create and retrieve records |
+| Preconditions | Fresh `Database` fixture (provided by `conftest.py`) |
+| Test steps | Use `UserDAO` to create a user; flush and refresh |
+| Test data/input | `username="bob"`, `password="pass"` |
+| Expected result | Created user has non-null id and can be retrieved by username |
+| Actual result | Pass (user persisted and retrievable) |
+| Status | Pass |
+| Comments | Verified by DB test `test_init_schema_and_user_creation` |
 
----
-
-### 🔍 Discovery & Organization
+### TC_008
 | Field | Details |
-| :--- | :--- |
-| **User case ID** | TC_008 |
-| **User case title/description** | Verify task filtering by description keywords |
-| **Preconditions** | Multiple tasks exist with different names |
-| **User steps** | 1. Enter keyword in the search bar |
-| **User data/input** | Keyword: "Report" |
-| **Expected result** | Only tasks containing "Report" are visible in the list |
-| **Status** | Pass |
+| --- | --- |
+| Test case ID | TC_008 |
+| Test case title/description | DAOs can save `Task` and `TaskInstance` and retrieve them |
+| Preconditions | Fresh `Database` fixture and baseline `user` fixture |
+| Test steps | Create `Task` via `TaskDAO` and `TaskInstance` via `TaskInstanceDAO`; flush; query DAOs |
+| Test data/input | `Task(description="DB test")`, `TaskInstance(due_date=now)` |
+| Expected result | `Task` appears in `TaskDAO.get_tasks_by_user`; `TaskInstance` appears in `get_pending_instances` |
+| Actual result | Pass (both Task and TaskInstance persisted and found) |
+| Status | Pass |
+| Comments | Verified by DB test `test_daos_save_and_retrieve` |
 
+### TC_009
 | Field | Details |
-| :--- | :--- |
-| **User case ID** | TC_009 |
-| **User case title/description** | Verify list filtering by Priority Level |
-| **Preconditions** | Tasks with varied priorities exist (Low, Medium, High) |
-| **User steps** | 1. Select "High" from the Priority filter dropdown |
-| **User data/input** | Filter: "High" |
-| **Expected result** | Only tasks with "High" priority are displayed |
-| **Status** | Pass |
+| --- | --- |
+| Test case ID | TC_009 |
+| Test case title/description | Database transaction rolls back on exception |
+| Preconditions | Fresh `Database` fixture |
+| Test steps | Within `session_scope` create a user then raise `RuntimeError`; catch outside; query for the user |
+| Test data/input | `username="temp"` |
+| Expected result | After exception, user is not persisted (`get_by_username` returns `None`) |
+| Actual result | Pass (transaction rolled back) |
+| Status | Pass |
+| Comments | Verified by DB test `test_transaction_rollback_on_exception` |
 
+### TC_010
 | Field | Details |
-| :--- | :--- |
-| **User case ID** | TC_010 |
-| **User case title/description** | Verify behavior when no tasks match search criteria (Edge Case) |
-| **Preconditions** | Standard tasks exist in the database |
-| **User steps** | 1. Enter a non-matching string in search |
-| **User data/input** | Search: "xyz123nonexistent" |
-| **Expected result** | List displays "No tasks found"; system remains stable |
-| **Status** | Pass |
+| --- | --- |
+| Test case ID | TC_010 |
+| Test case title/description | create_task spawns the first `TaskInstance` |
+| Preconditions | Fresh `Database` fixture and baseline `user` fixture |
+| Test steps | Call `TaskService.create_task(...)`; then query `TaskInstanceDAO.get_pending_instances(task.id)` |
+| Test data/input | `description="integ task"`, `due_date=now` |
+| Expected result | Exactly one pending instance exists for the created task with same `due_date` |
+| Actual result | Pass (one pending instance found matching due_date) |
+| Status | Pass |
+| Comments | Verified by integration test `test_create_task_spawns_instance` |
 
----
-
-### 🧬 Specialized Task Behaviors
+### TC_011
 | Field | Details |
-| :--- | :--- |
-| **User case ID** | TC_011 |
-| **User case title/description** | Verify "Overdue" flag triggers for Deadline Tasks |
-| **Preconditions** | User is on the creation screen |
-| **User steps** | 1. Create Deadline Task; 2. Set Due Date to a past date |
-| **User data/input** | Due Date: `2020-01-01` |
-| **Expected result** | Task is created and automatically marked with an "Overdue" badge |
-| **Status** | Pass |
+| --- | --- |
+| Test case ID | TC_011 |
+| Test case title/description | Completing a recurring task creates the next instance (parametrized) |
+| Preconditions | Fresh `Database` fixture and baseline `user` fixture |
+| Test steps | For each interval (Daily/Weekly/Monthly): create recurring task, call `mark_completed`, check returned next instance and `due_date` |
+| Test data/input | `interval = DAILY/WEEKLY/MONTHLY`; `due_date=now` |
+| Expected result | `mark_completed` returns a new `TaskInstance` with `due_date == _next_due_date(original_due, interval)` |
+| Actual result | Pass (next instances created with correct due dates) |
+| Status | Pass |
+| Comments | Verified by integration test `test_mark_completed_creates_next_for_recurring` |
 
+### TC_012
 | Field | Details |
-| :--- | :--- |
-| **User case ID** | TC_012 |
-| **User case title/description** | Verify task automatically renews after completion |
-| **Preconditions** | A Recurring Task with a "Daily" interval is present |
-| **User steps** | 1. Mark the Recurring Task as "Completed" |
-| **User data/input** | Interval: "Daily" |
-| **Expected result** | Old task is archived; a new task instance is created for the next day |
-| **Status** | Pass |
+| --- | --- |
+| Test case ID | TC_012 |
+| Test case title/description | Completing a one-time task returns `None` (no next instance) |
+| Preconditions | Fresh `Database` fixture and baseline `user` fixture |
+| Test steps | Create one-time task (`interval=None`), call `mark_completed` |
+| Test data/input | one-time task with `due_date=now` |
+| Expected result | `mark_completed` returns `None` and no next pending instance is created |
+| Actual result | Pass (function returned None for one-time tasks) |
+| Status | Pass |
+| Comments | Verified by integration test `test_mark_completed_one_time_returns_none` |
 
-| Field | Details |
-| :--- | :--- |
-| **User case ID** | TC_013 |
-| **User case title/description** | Verify UI adapts when switching Task types |
-| **Preconditions** | "New Task" modal is open |
-| **User steps** | 1. Change type from "Deadline" to "Recurring" |
-| **User data/input** | Type Selector |
-| **Expected result** | "Due Date" field is hidden and "Interval" field is displayed |
-| **Status** | Pass |
-
----
-
-### 📊 Reporting & Persistence
-| Field | Details |
-| :--- | :--- |
-| **User case ID** | TC_014 |
-| **User case title/description** | Verify data remains after a browser refresh (System Test) |
-| **Preconditions** | User has created multiple tasks |
-| **User steps** | 1. Manually refresh the browser page (F5) |
-| **User data/input** | N/A |
-| **Expected result** | All tasks are re-fetched from SQLite and persist in the UI |
-| **Status** | Pass |
-
-| Field | Details |
-| :--- | :--- |
-| **User case ID** | TC_015 |
-| **User case title/description** | Verify export of task data to external file |
-| **Preconditions** | User has task history in the system |
-| **User steps** | 1. Click "Download Report" button |
-| **User data/input** | N/A |
-| **Expected result** | A downloadable file (.csv/.xlsx) is generated with task statistics |
-| **Status** | Pass |
 
 ---
 
